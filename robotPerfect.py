@@ -18,11 +18,11 @@ GPIO.setup(ANSWER_C, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 previous_robot = None
 previous_human = None
-#curdir = os.path.dirname(os.path.realpath(__file__))
+curdir = os.path.dirname(os.path.realpath(__file__))
 random.seed(datetime.now())
 
 def find_random_question():
-   pattern = os.path.sep.join([os.path.curdir, "questions", "**", "*.mp3"])
+   pattern = os.path.sep.join([curdir, "questions", "**", "*.mp3"])
    results = glob.glob(pattern, recursive=True)
 
    if not results:
