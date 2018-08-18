@@ -24,38 +24,24 @@ random.seed(datetime.now())
 def find_random_question():
    pattern = os.path.sep.join([curdir, "questions", "**", "*.mp3"])
    results = glob.glob(pattern, recursive=True)
-   print("results:", results)
-
    if not results:
       return []
    else:
       question = random.choice(results)
-      print("question:", question)
       correct = os.path.dirname(question).split(os.path.sep)[-1]
-      print("correct:", correct)
       return [correct, os.path.realpath(question)]
 
-def play_random(voice, previous):
-   pattern = "/mp3h/*.mp3" if voice == "human" else "/mp3/*.mp3"
-   randomfile = random.choice(glob.glob(curdir + pattern))
-   if randomfile == previous:
-    return play_random(voice, previous)
-   else:
-    return randomfile
-
-def button_pressed(voice, previous):
-   random.seed(datetime.now())
+def play_sound(file):
    time.sleep(0.2)
-   file = play_random(voice, previous)
    os.system ('mpg123 ' + file)
-   return file
 
 def was_pressed(button):
    return not GPIO.input(button)
 
 while True:
     if was_pressed(QUESTION):
-       print(find_random_question())
+       correct, question = find_random_question()
+       play_sound(question)
 
     # if was_pressed(ANSWER_A):
     #     previous_robot = button_pressed('robot', previous_robot)
