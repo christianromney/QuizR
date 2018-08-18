@@ -57,13 +57,13 @@ while True:
     if was_pressed(QUESTION):
        println(find_random_question())
 
-    if was_pressed(ANSWER_A):
-        previous_robot = button_pressed('robot', previous_robot)
+    # if was_pressed(ANSWER_A):
+    #     previous_robot = button_pressed('robot', previous_robot)
 
-    if was_pressed(ANSWER_B):
-        previous_human = button_pressed('human', previous_robot)
+    # if was_pressed(ANSWER_B):
+    #     previous_human = button_pressed('human', previous_robot)
 
-    if was_pressed(ANSWER_C):
-        previous_robot = button_pressed('robot', previous_robot)
+    # if was_pressed(ANSWER_C):
+    #     previous_robot = button_pressed('robot', previous_robot)
 
 GPIO.cleanup()
