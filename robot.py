@@ -35,8 +35,6 @@ def find_random_question():
       return [correct, question]
 
 def play_sound(file):
-   pygame.mixer.music.stop()
-   time.sleep(0.2)
    pygame.mixer.music.load(os.path.realpath(file))
    pygame.mixer.music.play()
 
