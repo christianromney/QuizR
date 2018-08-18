@@ -24,33 +24,43 @@ def initialize():
    random.seed(datetime.now())
    pygame.mixer.init(channels=1)
 
-def find_random_question():
-   pattern = os.path.sep.join([curdir, "questions", "**", "*.mp3"])
+def as_filename(parts):
+   return os.path.sep.join(parts)
+
+def expand_path(path):
+   return os.path.realpath(path)
+
+def find_random_question(last_question):
+   pattern = as_filename([curdir, "questions", "**", "*.mp3"])
    results = glob.glob(pattern, recursive=True)
    if not results:
       return []
    else:
       question = random.choice(results)
-      correct = os.path.dirname(question).split(os.path.sep)[-1]
-      return [correct, question]
+      if expand_path(question) == expand_path(last_question):
+         return find_random_question(last_question)
+      else:
+         correct = os.path.dirname(question).split(os.path.sep)[-1]
+         return [correct, question]
 
 def play_sound(file):
-   pygame.mixer.Sound.play(os.path.realpath(file))
+   pygame.mixer.Sound.play(expand_path(file))
+
+def play_message(msg):
+   play_sound(as_filename([curdir, "messages", msg + ".mp3"]))
+
+def check_answer(correct, given):
+   print("pressed %s " % given)
+   play_message("correct" if correct == given else "try-again")
 
 def was_pressed(button):
    return not GPIO.input(button)
 
-def play_message(msg):
-   file = os.path.sep.join([curdir, "messages", msg + ".mp3"])
-   play_sound(file)
-
-def check_answer(correct, given):
-   play_message("correct" if correct == given else "try-again")
 
 initialize()
 while True:
    if was_pressed(QUESTION):
-      correct, question = find_random_question()
+      correct, question = find_random_question(question)
       play_sound(question)
 
    if was_pressed(ANSWER_A):
