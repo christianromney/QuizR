@@ -24,15 +24,15 @@ random.seed(datetime.now())
 def find_random_question():
    pattern = os.path.sep.join([curdir, "questions", "**", "*.mp3"])
    results = glob.glob(pattern, recursive=True)
-   println("results:", results)
+   print("results:", results)
 
    if not results:
       return []
    else:
       question = random.choice(results)
-      println("question:", question)
+      print("question:", question)
       correct = os.path.dirname(question).split(os.path.sep)[-1]
-      println("correct:", correct)
+      print("correct:", correct)
       return [current, os.path.realpath(question)]
 
 def play_random(voice, previous):
@@ -55,7 +55,7 @@ def was_pressed(button):
 
 while True:
     if was_pressed(QUESTION):
-       println(find_random_question())
+       print(find_random_question())
 
     # if was_pressed(ANSWER_A):
     #     previous_robot = button_pressed('robot', previous_robot)
