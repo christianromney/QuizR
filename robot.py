@@ -22,7 +22,7 @@ def initialize():
    GPIO.setup(ANSWER_B, GPIO.IN, pull_up_down=GPIO.PUD_UP)
    GPIO.setup(ANSWER_C, GPIO.IN, pull_up_down=GPIO.PUD_UP)
    random.seed(datetime.now())
-   pygame.mixer.init()
+   pygame.mixer.init(channels=1)
 
 def find_random_question():
    pattern = os.path.sep.join([curdir, "questions", "**", "*.mp3"])
@@ -35,8 +35,7 @@ def find_random_question():
       return [correct, question]
 
 def play_sound(file):
-   pygame.mixer.music.load(os.path.realpath(file))
-   pygame.mixer.music.play()
+   pygame.mixer.Sound.play(os.path.realpath(file))
 
 def was_pressed(button):
    return not GPIO.input(button)
