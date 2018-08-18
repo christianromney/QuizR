@@ -5,9 +5,16 @@ import os
 from datetime import datetime
 import random , glob , subprocess
 
+QUESTION = 18
+ANSWER_A = 23
+ANSWER_B = 24
+ANSWER_C = 25
+
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(QUESTION, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(ANSWER_A, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(ANSWER_B, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(ANSWER_C, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 previous_robot = None
 previous_human = None
@@ -28,13 +35,20 @@ def button_pressed(voice, previous):
    os.system ('mpg123 ' + file)
    return file
 
+def was_pressed(button):
+   return not GPIO.input(button)
+
 while True:
-    input_state = GPIO.input(18)
-    if input_state == False:
+    if was_pressed(QUESTION):
        previous_human = button_pressed('human', previous_human)
 
-    input_state = GPIO.input(23)
-    if input_state == False:
+    if was_pressed(ANSWER_A):
+        previous_robot = button_pressed('robot', previous_robot)
+
+    if was_pressed(ANSWER_B):
+        previous_human = button_pressed('human', previous_robot)
+
+    if was_pressed(ANSWER_C):
         previous_robot = button_pressed('robot', previous_robot)
 
 GPIO.cleanup()
