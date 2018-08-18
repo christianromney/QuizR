@@ -37,7 +37,7 @@ def find_random_question(last_question):
       return []
    else:
       question = random.choice(results)
-      if expand_path(question) == expand_path(last_question):
+      if last_question and expand_path(question) == expand_path(last_question):
          return find_random_question(last_question)
       else:
          correct = os.path.dirname(question).split(os.path.sep)[-1]
