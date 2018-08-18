@@ -50,20 +50,17 @@ def play_message(msg):
 def check_answer(correct, given):
    play_message("correct" if correct == given else "try-again")
 
-if __file__ == "__main__":
-   initialize()
-   while True:
-      if was_pressed(QUESTION):
-         correct, question = find_random_question()
-         play_sound(question)
+initialize()
+while True:
+   if was_pressed(QUESTION):
+      correct, question = find_random_question()
+      play_sound(question)
 
-      if was_pressed(ANSWER_A):
-         check_answer(correct, "a")
+   if was_pressed(ANSWER_A):
+      check_answer(correct, "a")
 
-      if was_pressed(ANSWER_B):
-         check_answer(correct, "b")
+   if was_pressed(ANSWER_B):
+      check_answer(correct, "b")
 
-      if was_pressed(ANSWER_C):
-         check_answer(correct, "c")
-
-   #GPIO.cleanup()
+   if was_pressed(ANSWER_C):
+      check_answer(correct, "c")
