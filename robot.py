@@ -44,7 +44,8 @@ def find_random_question(last_question):
          return [correct, question]
 
 def play_sound(file):
-   pygame.mixer.Sound.play(expand_path(file))
+   pygame.mixer.Sound(expand_path(file))
+   pygame.mixer.Sound.play(sound)
 
 def play_message(msg):
    play_sound(as_filename([curdir, "messages", msg + ".mp3"]))
