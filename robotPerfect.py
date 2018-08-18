@@ -33,7 +33,7 @@ def find_random_question():
       print("question:", question)
       correct = os.path.dirname(question).split(os.path.sep)[-1]
       print("correct:", correct)
-      return [current, os.path.realpath(question)]
+      return [correct, os.path.realpath(question)]
 
 def play_random(voice, previous):
    pattern = "/mp3h/*.mp3" if voice == "human" else "/mp3/*.mp3"
