@@ -51,7 +51,6 @@ def play_message(msg):
    play_sound(as_filename([curdir, "messages", msg + ".mp3"]))
 
 def check_answer(correct, given):
-   print("pressed %s " % given)
    play_message("correct" if correct == given else "try-again")
 
 def was_pressed(button):
