@@ -24,12 +24,15 @@ random.seed(datetime.now())
 def find_random_question():
    pattern = os.path.sep.join([curdir, "questions", "**", "*.mp3"])
    results = glob.glob(pattern, recursive=True)
+   println("results:", results)
 
    if not results:
       return []
    else:
       question = random.choice(results)
+      println("question:", question)
       correct = os.path.dirname(question).split(os.path.sep)[-1]
+      println("correct:", correct)
       return [current, os.path.realpath(question)]
 
 def play_random(voice, previous):
