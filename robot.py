@@ -44,8 +44,8 @@ def find_random_question(last_question):
          return [correct, question]
 
 def play_sound(file):
-   pygame.mixer.Sound(expand_path(file))
-   pygame.mixer.Sound.play(sound)
+   pygame.mixer.music.load(expand_path(file))
+   pygame.mixer.music.play()
 
 def play_message(msg):
    play_sound(as_filename([curdir, "messages", msg + ".mp3"]))
@@ -56,7 +56,6 @@ def check_answer(correct, given):
 
 def was_pressed(button):
    return not GPIO.input(button)
-
 
 initialize()
 while True:
