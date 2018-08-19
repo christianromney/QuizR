@@ -31,7 +31,7 @@ def expand_path(path):
    return os.path.realpath(path)
 
 def find_random_question(last_question):
-   pattern = as_filename([curdir, "questions", "**", "*.mp3"])
+   pattern = as_filename([curdir, "questions", "**", "*.aiff"])
    results = glob.glob(pattern, recursive=True)
    if not results:
       return []
