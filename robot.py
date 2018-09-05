@@ -60,12 +60,13 @@ def find_random_question(last_question):
          correct = os.path.dirname(question).split(os.path.sep)[-1]
          return [correct.lower(), question]
 
-def play_message(msg):
-   play_sound(as_filename([curdir, "messages", msg + ".mp3"]))
+def play_message(msg_type):
+   pattern = as_filename([curdir, "messages", msg_type, "*.mp3"])
+   play_sound(random.choice(glob.glob(pattern)))
 
 def check_answer(correct, given):
    print("Selected %s (%s is correct)." % (given, correct))
-   play_message("correct" if correct == given else "try-again")
+   play_message("correct" if correct == given else "incorrect")
 
 def on_question_button_pressed(channel):
    global correct
