@@ -87,9 +87,10 @@ def on_exit(signal, frame):
 
 def initialize():
    # setup GPIO pin interrupt handlers
-   print("Initializing GPIO.")
+   print("Initializing GPIO pins with pull-up resistors.")
    GPIO.setmode(GPIO.BCM)
-
+   # setting up the GPIO pins with a pull-up resistor means the wire to the GPIO
+   # pins will be high. therefore, the non-GPIO wire on the switch must go to ground.
    GPIO.setup(QUESTION, GPIO.IN, pull_up_down=GPIO.PUD_UP)
    GPIO.setup(ANSWER_A, GPIO.IN, pull_up_down=GPIO.PUD_UP)
    GPIO.setup(ANSWER_B, GPIO.IN, pull_up_down=GPIO.PUD_UP)
