@@ -49,7 +49,10 @@ class UserInterface:
         """Event handler for answer buttons."""
         answer = self.determine_answer_from_channel(channel)
         print("Selected %s (%s is correct)." % (answer, self.bank.correct_answer))
-        self.sounds.play_message("correct" if self.bank.is_correct(answer) else "incorrect")
+        if self.bank.correct_answer:
+            self.sounds.play_message("correct" if self.bank.is_correct(answer) else "incorrect")
+        else:
+            self.sounds.play_message("question")
 
     def cleanup(self, _signal, _frame):
         """Handler for application exit. Cleans up GPIO."""
