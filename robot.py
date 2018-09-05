@@ -110,4 +110,5 @@ def initialize():
 initialize()
 
 while keep_running:
+   # the main program loop doesn't do anything interesting
    time.sleep(0.333)
