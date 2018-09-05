@@ -1,8 +1,4 @@
-if __debug__:
-   from RPiSim.GPIO import GPIO
-else:
-   import RPi.GPIO as GPIO
-
+import RPi.GPIO as GPIO
 import pygame
 import time
 import os
@@ -22,6 +18,7 @@ question = None
 curdir   = os.path.dirname(os.path.realpath(__file__))
 
 keep_running      = True
+exiting           = False
 topic_filename    = "topic.mp3"
 current_topic_idx = 0
 current_topic_dir = None
@@ -64,21 +61,31 @@ def play_message(msg):
    play_sound(as_filename([curdir, "messages", msg + ".mp3"]))
 
 def check_answer(correct, given):
+   print("Answer button %s pressed" % given)
    play_message("correct" if correct == given else "try-again")
 
-def on_question_button_pressed():
+def on_question_button_pressed(channel):
+   global correct
+   global question
    correct, question = find_random_question(question)
    play_sound(question)
 
 def make_answer_button_handler(button):
-   return lambda: check_answer(correct, button)
+   global correct
+   return lambda channel: check_answer(correct, button)
 
-def signal_handler(signal, frame):
-   print("Interrupt singal received, exiting.")
-   keep_running = False
+def on_exit(signal, frame):
+   global keep_running
+   global exiting
+   if not exiting:
+      exiting = True
+      print("\n\nInterrupt singal received.\nCleaning up GPIO.\nGoodbye!\n\n")
+      GPIO.cleanup([QUESTION, ANSWER_A, ANSWER_B, ANSWER_C])
+      keep_running = False
 
 def initialize():
    # setup GPIO pin interrupt handlers
+   print("Initializing GPIO.")
    GPIO.setmode(GPIO.BCM)
 
    GPIO.setup(TOPIC,    GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -87,13 +94,13 @@ def initialize():
    GPIO.setup(ANSWER_B, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
    GPIO.setup(ANSWER_C, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-   GPIO.add_event_detect(QUESTION, GPIO.rising, callback=on_question_button_pressed, bouncetime=300)
-   GPIO.add_event_detect(ANSWER_A, GPIO.rising, callback=make_answer_button_handler("a"), bouncetime=300)
-   GPIO.add_event_detect(ANSWER_B, GPIO.rising, callback=make_answer_button_handler("b"), bouncetime=300)
-   GPIO.add_event_detect(ANSWER_C, GPIO.rising, callback=make_answer_button_handler("c"), bouncetime=300)
+   GPIO.add_event_detect(QUESTION, GPIO.RISING, callback=on_question_button_pressed, bouncetime=300)
+   GPIO.add_event_detect(ANSWER_A, GPIO.RISING, callback=make_answer_button_handler("a"), bouncetime=300)
+   GPIO.add_event_detect(ANSWER_B, GPIO.RISING, callback=make_answer_button_handler("b"), bouncetime=300)
+   GPIO.add_event_detect(ANSWER_C, GPIO.RISING, callback=make_answer_button_handler("c"), bouncetime=300)
 
    # setup interrupt signal handler (CTRL+C)
-   signal.signal(signal.SIGINT, signal_handler)
+   signal.signal(signal.SIGINT, on_exit)
 
    # initialize data, libraries
    random.seed(datetime.now())
