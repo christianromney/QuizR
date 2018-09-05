@@ -12,6 +12,9 @@ QUESTION = 18
 ANSWER_A = 23
 ANSWER_B = 24
 ANSWER_C = 25
+ANSWER_FOLDER = {ANSWER_A: "a",
+                 ANSWER_B: "b",
+                 ANSWER_C: "c"}
 
 correct  = None
 question = None
@@ -45,8 +48,7 @@ def load_topics():
 
 def find_random_question(last_question):
    pattern = as_filename([curdir, "questions", "**", "*.mp3"])
-   results = [x for x in glob.glob(pattern, recursive=True) if not x.endswith("topic.mp3")]
-   print(results)
+   results = [x for x in glob.glob(pattern, recursive=True) if not x.endswith(topic_filename)]
    if not results:
       return []
    else:
@@ -55,13 +57,13 @@ def find_random_question(last_question):
          return find_random_question(last_question)
       else:
          correct = os.path.dirname(question).split(os.path.sep)[-1]
-         return [correct, question]
+         return [correct.lower(), question]
 
 def play_message(msg):
    play_sound(as_filename([curdir, "messages", msg + ".mp3"]))
 
 def check_answer(correct, given):
-   print("Answer button %s pressed" % given)
+   print("Selected %s (%s is correct)." % (given, correct))
    play_message("correct" if correct == given else "try-again")
 
 def on_question_button_pressed(channel):
@@ -70,9 +72,9 @@ def on_question_button_pressed(channel):
    correct, question = find_random_question(question)
    play_sound(question)
 
-def make_answer_button_handler(button):
+def on_answer_button_pressed(channel):
    global correct
-   return lambda channel: check_answer(correct, button)
+   return check_answer(correct, ANSWER_FOLDER.get(channel).lower())
 
 def on_exit(signal, frame):
    global keep_running
@@ -88,16 +90,15 @@ def initialize():
    print("Initializing GPIO.")
    GPIO.setmode(GPIO.BCM)
 
-   GPIO.setup(TOPIC,    GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-   GPIO.setup(QUESTION, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-   GPIO.setup(ANSWER_A, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-   GPIO.setup(ANSWER_B, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-   GPIO.setup(ANSWER_C, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+   GPIO.setup(QUESTION, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+   GPIO.setup(ANSWER_A, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+   GPIO.setup(ANSWER_B, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+   GPIO.setup(ANSWER_C, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-   GPIO.add_event_detect(QUESTION, GPIO.RISING, callback=on_question_button_pressed, bouncetime=300)
-   GPIO.add_event_detect(ANSWER_A, GPIO.RISING, callback=make_answer_button_handler("a"), bouncetime=300)
-   GPIO.add_event_detect(ANSWER_B, GPIO.RISING, callback=make_answer_button_handler("b"), bouncetime=300)
-   GPIO.add_event_detect(ANSWER_C, GPIO.RISING, callback=make_answer_button_handler("c"), bouncetime=300)
+   GPIO.add_event_detect(QUESTION, GPIO.FALLING, callback=on_question_button_pressed, bouncetime=300)
+   GPIO.add_event_detect(ANSWER_A, GPIO.FALLING, callback=on_answer_button_pressed, bouncetime=300)
+   GPIO.add_event_detect(ANSWER_B, GPIO.FALLING, callback=on_answer_button_pressed, bouncetime=300)
+   GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=on_answer_button_pressed, bouncetime=300)
 
    # setup interrupt signal handler (CTRL+C)
    signal.signal(signal.SIGINT, on_exit)
