@@ -7,11 +7,12 @@ import signal
 from datetime import datetime
 import random, glob, subprocess
 
-TOPIC    = 17
 QUESTION = 18
 ANSWER_A = 23
 ANSWER_B = 24
 ANSWER_C = 25
+CHANNELS = [QUESTION, ANSWER_A, ANSWER_B, ANSWER_C]
+
 ANSWER_FOLDER = {ANSWER_A: "a",
                  ANSWER_B: "b",
                  ANSWER_C: "c"}
@@ -82,7 +83,7 @@ def on_exit(signal, frame):
    if not exiting:
       exiting = True
       print("\n\nInterrupt singal received.\nCleaning up GPIO.\nGoodbye!\n\n")
-      GPIO.cleanup([QUESTION, ANSWER_A, ANSWER_B, ANSWER_C])
+      GPIO.cleanup(CHANNELS)
       keep_running = False
 
 def initialize():
@@ -91,10 +92,7 @@ def initialize():
    GPIO.setmode(GPIO.BCM)
    # setting up the GPIO pins with a pull-up resistor means the wire to the GPIO
    # pins will be high. therefore, the non-GPIO wire on the switch must go to ground.
-   GPIO.setup(QUESTION, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-   GPIO.setup(ANSWER_A, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-   GPIO.setup(ANSWER_B, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-   GPIO.setup(ANSWER_C, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+   GPIO.setup(CHANNELS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
    GPIO.add_event_detect(QUESTION, GPIO.FALLING, callback=on_question_button_pressed, bouncetime=300)
    GPIO.add_event_detect(ANSWER_A, GPIO.FALLING, callback=on_answer_button_pressed, bouncetime=300)
