@@ -14,5 +14,5 @@ ui     = ui.UserInterface(topics, bank, sounds)
 # the entry point to the application...
 if __name__ == "__main__":
    signal.signal(signal.SIGINT, ui.cleanup)
-   #while ui.running:
-      #time.sleep(0.5)
+   while ui.running:
+      time.sleep(0.5)
