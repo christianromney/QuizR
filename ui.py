@@ -2,6 +2,7 @@ import os, random
 import RPi.GPIO as GPIO
 from datetime import datetime
 
+TOGGLE   = 17
 QUESTION = 18
 ANSWER_A = 23
 ANSWER_B = 24
@@ -15,7 +16,7 @@ ANSWER_FROM_CHANNEL = {ANSWER_A: "a",
 class UserInterface:
     """This is the main application class which wires up the user interface to
     GPIO pins and handles events."""
-    def __init__(self, question_bank, sounds):
+    def __init__(self, topics, question_bank, sounds):
         """Setting up the GPIO pins with a pull-up resistor means the wire to the GPIO
          pins will be high. therefore, the non-GPIO wire on the switch must go to ground."""
         random.seed(datetime.now())
@@ -23,11 +24,13 @@ class UserInterface:
         self.running       = True
         self.exiting       = False
 
+        self.topics        = topics
         self.bank          = question_bank
         self.sounds        = sounds
 
         print("Initializing GPIO pins with pull-up resistors.")
         GPIO.setmode(GPIO.BCM)
+        GPIO.setup(TOGGLE, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(CHANNELS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         # setup GPIO pin interrupt handlers
@@ -36,14 +39,22 @@ class UserInterface:
         GPIO.add_event_detect(ANSWER_B, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=300)
         GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=300)
 
+
     def determine_answer_from_channel(self, channel):
         """Given a GPIO channel (pin number), returns the associated logical answer (a, b, c)"""
         return ANSWER_FROM_CHANNEL.get(channel)
 
     def on_next_button_pressed(self, channel):
         """Event handler for the next button."""
-        self.bank.next_question()
-        self.sounds.play_sound(self.bank.current_question)
+        if GPIO.input(TOGGLE):
+            self.topics.next_topic()
+            print("Topic changed to: %s" % self.topics.current_topic_display_name())
+            self.bank.reset_topic_questions(self.topics.current_topic_directory())
+            self.sounds.play_sound(self.topics.current_topic_sound_file())
+        else:
+            self.bank.next_question()
+            print("Current question: %s" % self.bank.current_question)
+            self.sounds.play_sound(self.bank.current_question)
 
     def on_answer_button_pressed(self, channel):
         """Event handler for answer buttons."""

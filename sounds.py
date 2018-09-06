@@ -7,7 +7,9 @@ class Sounds:
         self.sound_resource_path = base_path
 
     def play_sound(self, file):
-        pygame.mixer.music.load(os.path.realpath(file))
+        path = os.path.realpath(file)
+        print("Playing %s" % path)
+        pygame.mixer.music.load(path)
         pygame.mixer.music.play()
 
     def play_message(self, msg_type):

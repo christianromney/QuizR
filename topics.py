@@ -14,7 +14,15 @@ class Topics:
         self.navigator = navigation.LoopingNavigator(self.topics)
         self.current_topic = self.navigator.get()
 
+    def next_topic(self):
+        self.navigator.move_next()
+        self.current_topic = self.navigator.get()
+
+    def current_topic_sound_file(self):
+        return self.current_topic + os.path.sep + self.topic_file_name
+
+    def current_topic_directory(self):
+        return self.current_topic.split(os.path.sep)[-1]
+
     def current_topic_display_name(self):
-        """Extracts the current topic's name for textual display."""
-        topic = self.current_topic.split(os.path.sep)[-1]
-        return string.capwords(topic.replace("-", " "))
+        return string.capwords(self.current_topic_directory().replace("-", " "))
