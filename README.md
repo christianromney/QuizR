@@ -7,7 +7,7 @@ This repository contains a Raspberry PI quiz game project.
 - [pygame](https://www.pygame.org/news) for sound playback.
 - [raspberry-gpio-emulator](https://github.com/nosix/raspberry-gpio-emulator) for emulating a PI's GPIO pins
 
-[prototype](!https://raw.githubusercontent.com/christianromney/QuizR/master/quizr.png)
+![prototype](https://raw.githubusercontent.com/christianromney/QuizR/master/quizr.png)
 
 ## License
 
