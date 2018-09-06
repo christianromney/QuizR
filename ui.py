@@ -1,5 +1,6 @@
 import os, random
 import RPi.GPIO as GPIO
+import display
 from datetime import datetime
 
 TOGGLE   = 17
@@ -41,6 +42,8 @@ class UserInterface:
 
         self.sounds.play_message("startup")
 
+        self.display = display.Display()
+        self.display.text("Press the question button to begin.")
 
     def determine_answer_from_channel(self, channel):
         """Given a GPIO channel (pin number), returns the associated logical answer (a, b, c)"""
@@ -53,6 +56,7 @@ class UserInterface:
             print("Topic changed to: %s" % self.topics.current_topic_display_name())
             self.bank.reset_topic_questions(self.topics.current_topic_directory())
             self.sounds.play_sound(self.topics.current_topic_sound_file())
+            self.display.file(self.topics.current_topic_text_file())
         else:
             self.bank.next_question()
             print("Current question: %s" % self.bank.current_question)

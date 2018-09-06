@@ -6,7 +6,8 @@ class Topics:
     def __init__(self, base_path):
         self.base_path = base_path
         self.topic_directory_name = "questions"
-        self.topic_file_name = "topic.mp3"
+        self.topic_sound_file_name = "topic.mp3"
+        self.topic_text_file_name = "topic.out"
 
         pattern = os.path.sep.join([base_path, self.topic_directory_name, "*"])
 
@@ -19,7 +20,10 @@ class Topics:
         self.current_topic = self.navigator.get()
 
     def current_topic_sound_file(self):
-        return self.current_topic + os.path.sep + self.topic_file_name
+        return self.current_topic + os.path.sep + self.topic_sound_file_name
+
+    def current_topic_text_file(self):
+        return self.current_topic + os.path.sep + self.topic_text_file_name
 
     def current_topic_directory(self):
         return self.current_topic.split(os.path.sep)[-1]
