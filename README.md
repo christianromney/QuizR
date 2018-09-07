@@ -6,8 +6,9 @@ This repository contains a Raspberry PI quiz game project.
 
 - [pygame](https://www.pygame.org/news) for sound playback.
 - [raspberry-gpio-emulator](https://github.com/nosix/raspberry-gpio-emulator) for emulating a PI's GPIO pins
+- [Adafruit SSD1306 Python](https://github.com/adafruit/Adafruit_Python_SSD1306)
 
-![prototype](https://raw.githubusercontent.com/christianromney/QuizR/master/quizr.png)
+![prototype](https://raw.githubusercontent.com/christianromney/QuizR/master/quizr.jpg)
 
 ## License
 
