@@ -35,10 +35,10 @@ class UserInterface:
         GPIO.setup(CHANNELS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         # setup GPIO pin interrupt handlers
-        GPIO.add_event_detect(QUESTION, GPIO.FALLING, callback=self.on_next_button_pressed,   bouncetime=300)
-        GPIO.add_event_detect(ANSWER_A, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=300)
-        GPIO.add_event_detect(ANSWER_B, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=300)
-        GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=300)
+        GPIO.add_event_detect(QUESTION, GPIO.FALLING, callback=self.on_next_button_pressed,   bouncetime=500)
+        GPIO.add_event_detect(ANSWER_A, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=500)
+        GPIO.add_event_detect(ANSWER_B, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=500)
+        GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=500)
 
         self.sounds.play_message("startup")
         self.display = display.Display()
