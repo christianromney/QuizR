@@ -1,6 +1,5 @@
 import os, random
 import RPi.GPIO as GPIO
-import display
 from datetime import datetime
 
 TOGGLE   = 17
@@ -17,17 +16,18 @@ ANSWER_FROM_CHANNEL = {ANSWER_A: "a",
 class UserInterface:
     """This is the main application class which wires up the user interface to
     GPIO pins and handles events."""
-    def __init__(self, topics, question_bank, sounds):
+    def __init__(self, topics=None, question_bank=None, sounds=None, display=None):
         """Setting up the GPIO pins with a pull-up resistor means the wire to the GPIO
          pins will be high. therefore, the non-GPIO wire on the switch must go to ground."""
         random.seed(datetime.now())
 
-        self.running       = True
-        self.exiting       = False
+        self.running = True
+        self.exiting = False
 
-        self.topics        = topics
-        self.bank          = question_bank
-        self.sounds        = sounds
+        self.topics  = topics
+        self.bank    = question_bank
+        self.sounds  = sounds
+        self.display = display
 
         print("Initializing GPIO pins with pull-up resistors.")
         GPIO.setmode(GPIO.BCM)
@@ -41,7 +41,6 @@ class UserInterface:
         GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=500)
 
         self.sounds.play_message("startup")
-        self.display = display.Display()
         self.display.file(self.topics.current_topic_text_file())
 
     def determine_answer_from_channel(self, channel):
