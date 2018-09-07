@@ -41,9 +41,8 @@ class UserInterface:
         GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=300)
 
         self.sounds.play_message("startup")
-
         self.display = display.Display()
-        self.display.text("Press the question button to begin.")
+        self.display.file(self.topics.current_topic_text_file())
 
     def determine_answer_from_channel(self, channel):
         """Given a GPIO channel (pin number), returns the associated logical answer (a, b, c)"""
