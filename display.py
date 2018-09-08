@@ -30,7 +30,7 @@ class Display:
         self.image   = Image.new('1', (self.width, self.height))
         self.draw    = ImageDraw.Draw(self.image)
 
-    def scroll(self, message, rate=0.025):
+    def scroll(self, message, rate=0.00125):
         self.text(message)
         for x in range(len(message) + 1):
             self.text(message[x:] or "")
