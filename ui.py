@@ -16,7 +16,7 @@ ANSWER_FROM_CHANNEL = {ANSWER_A: "a",
 class UserInterface:
     """This is the main application class which wires up the user interface to
     GPIO pins and handles events."""
-    def __init__(self, topics=None, question_bank=None, sounds=None, display=None):
+    def __init__(self, topics=None, question_bank=None, sounds=None, display=None, debounce=1000):
         """Setting up the GPIO pins with a pull-up resistor means the wire to the GPIO
          pins will be high. therefore, the non-GPIO wire on the switch must go to ground."""
         random.seed(datetime.now())
@@ -35,10 +35,10 @@ class UserInterface:
         GPIO.setup(CHANNELS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         # setup GPIO pin interrupt handlers
-        GPIO.add_event_detect(QUESTION, GPIO.FALLING, callback=self.on_next_button_pressed,   bouncetime=500)
-        GPIO.add_event_detect(ANSWER_A, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=500)
-        GPIO.add_event_detect(ANSWER_B, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=500)
-        GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=500)
+        GPIO.add_event_detect(QUESTION, GPIO.FALLING, callback=self.on_next_button_pressed,   bouncetime=debounce)
+        GPIO.add_event_detect(ANSWER_A, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=debounce)
+        GPIO.add_event_detect(ANSWER_B, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=debounce)
+        GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=debounce)
 
         self.sounds.play_message("startup")
         self.display.file(self.topics.current_topic_text_file())
