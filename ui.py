@@ -62,10 +62,16 @@ class UserInterface:
 
     def on_answer_button_pressed(self, channel):
         """Event handler for answer buttons."""
+        self.display.clear()
         answer = self.determine_answer_from_channel(channel)
         print("Selected %s (%s is correct)." % (answer, self.bank.correct_answer))
         if self.bank.correct_answer:
-            self.sounds.play_message("correct" if self.bank.is_correct(answer) else "incorrect")
+            if self.bank.is_correct(answer):
+                self.sounds.play_message("correct")
+                self.display.text("Correct!")
+            else:
+                self.sounds.play_message("incorrect")
+                self.display.text("Incorrect...")
         else:
             self.sounds.play_message("question")
 
