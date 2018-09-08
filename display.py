@@ -8,7 +8,7 @@ from PIL import ImageFont
 import _thread
 
 class Display:
-    def __init__(self, base_path, font="OpenSans-Regular", font_size=18):
+    def __init__(self, base_path, font="OpenSans-Regular", font_size=20):
         self.base    = base_path
         self.lock    = _thread.allocate_lock()
         self.font    = ImageFont.truetype(self.abspath(os.path.join(self.base, "fonts", font + ".ttf")), font_size)
@@ -35,6 +35,7 @@ class Display:
 
     def scroll(self, message, rate=0.0005):
         with self.lock:
+            self.clear()
             self.text(message)
             for x in range(len(message) + 1):
                 self.text(message[x:] or "")
