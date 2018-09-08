@@ -59,6 +59,7 @@ class UserInterface:
             self.bank.next_question()
             print("Current question: %s" % self.bank.current_question)
             self.sounds.play_sound(self.bank.current_question)
+            self.display.file(self.bank.current_question_text_file())
 
     def on_answer_button_pressed(self, channel):
         """Event handler for answer buttons."""

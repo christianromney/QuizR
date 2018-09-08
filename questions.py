@@ -25,6 +25,9 @@ answers.
          self.correct_answer   = os.path.dirname(self.current_question).split(os.path.sep)[-1].lower()
          self.navigator.move_next()
 
+   def current_question_text_file(self):
+      return self.current_question.split(os.path.extsep)[0] + ".out"
+
    def is_correct(self, answer):
       """Validates the correctness of the given answer."""
       return self.correct_answer.lower() == answer.lower()
