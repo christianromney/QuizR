@@ -1,2 +1,2 @@
 #!/bin/bash
-rsync -rhzv . romneypi:~/src/quizr/
+rsync -Crthzv --stats --progress --executability --exclude="__pycache__" --exclude=".git" . romneypi:~/src/quizr/
