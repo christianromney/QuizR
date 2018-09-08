@@ -6,7 +6,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 
 class Display:
-    def __init__(self, base_path, font="RedAlert", font_size=24):
+    def __init__(self, base_path, font="OpenSans-Regular", font_size=18):
         self.base    = base_path
         self.font    = ImageFont.truetype(self.abspath(os.path.join(self.base, "fonts", font + ".ttf")), font_size)
         self.device  = Adafruit_SSD1306.SSD1306_128_32(rst=None)
@@ -30,7 +30,7 @@ class Display:
         self.image   = Image.new('1', (self.width, self.height))
         self.draw    = ImageDraw.Draw(self.image)
 
-    def scroll(self, message, rate=0.05):
+    def scroll(self, message, rate=0.025):
         self.text(message)
         for x in range(len(message) + 1):
             self.text(message[x:] or "")
@@ -39,4 +39,4 @@ class Display:
 
     def file(self, path):
         with open(os.path.abspath(path), "r") as f:
-            self.scroll(f.read().capitalize())
+            self.scroll(f.read())

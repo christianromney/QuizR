@@ -49,6 +49,7 @@ class UserInterface:
 
     def on_next_button_pressed(self, channel):
         """Event handler for the next button."""
+        print("Next button pressed")
         if GPIO.input(TOGGLE):
             self.topics.next_topic()
             print("Topic changed to: %s" % self.topics.current_topic_display_name())
