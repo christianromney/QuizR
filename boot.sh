@@ -1,4 +1,6 @@
 #!/bin/sh -e
+clear
+hostname -I
 quizr="/home/pi/src/quizr/app.py"
 if [ -f "$quizr" ]; then
   logger -t QuizR -p user.info "[>>> Launching QuizR <<<]"

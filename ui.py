@@ -2,12 +2,12 @@ import os, random
 import RPi.GPIO as GPIO
 from datetime import datetime
 
-TOGGLE   = 17
+CATEGORY = 17
 NEXT     = 18
 ANSWER_A = 23
 ANSWER_B = 24
 ANSWER_C = 25
-CHANNELS = [NEXT, ANSWER_A, ANSWER_B, ANSWER_C]
+CHANNELS = [NEXT, CATEGORY, ANSWER_A, ANSWER_B, ANSWER_C]
 
 ANSWER_FROM_CHANNEL = {ANSWER_A: "a",
                        ANSWER_B: "b",
@@ -31,14 +31,14 @@ class UserInterface:
 
         print("Initializing GPIO pins with pull-up resistors.")
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(TOGGLE, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(CHANNELS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         # setup GPIO pin interrupt handlers
-        GPIO.add_event_detect(NEXT,     GPIO.FALLING, callback=self.on_next_button_pressed,   bouncetime=debounce)
-        GPIO.add_event_detect(ANSWER_A, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=debounce)
-        GPIO.add_event_detect(ANSWER_B, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=debounce)
-        GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed, bouncetime=debounce)
+        GPIO.add_event_detect(NEXT,     GPIO.FALLING, callback=self.on_next_button_pressed,     bouncetime=debounce)
+        GPIO.add_event_detect(CATEGORY, GPIO.FALLING, callback=self.on_category_button_pressed, bouncetime=debounce)
+        GPIO.add_event_detect(ANSWER_A, GPIO.FALLING, callback=self.on_answer_button_pressed,   bouncetime=debounce)
+        GPIO.add_event_detect(ANSWER_B, GPIO.FALLING, callback=self.on_answer_button_pressed,   bouncetime=debounce)
+        GPIO.add_event_detect(ANSWER_C, GPIO.FALLING, callback=self.on_answer_button_pressed,   bouncetime=debounce)
 
         self.sounds.play_message("startup")
         self.display.file(self.topics.current_topic_text_file(), capitalize=True)
@@ -47,18 +47,27 @@ class UserInterface:
         """Given a GPIO channel (pin number), returns the associated logical answer (a, b, c)"""
         return ANSWER_FROM_CHANNEL.get(channel)
 
+    def announce_correct(self):
+        self.sounds.play_message("correct")
+        self.display.text("Correct!")
+
+    def announce_incorrect(self):
+        self.sounds.play_message("incorrect")
+        self.display.text("Incorrect...")
+
     def on_next_button_pressed(self, channel):
         """Event handler for the next button."""
         print("\nNext button pressed")
-        if GPIO.input(TOGGLE):
-            self.topics.next_topic()
-            self.bank.reset_topic_questions(self.topics.current_topic_directory())
-            self.sounds.play_sound(self.topics.current_topic_sound_file())
-            self.display.file(self.topics.current_topic_text_file(), capitalize=True)
-        else:
-            self.bank.next_question()
-            self.sounds.play_sound(self.bank.current_question)
-            self.display.file(self.bank.current_question_text_file())
+        self.bank.next_question()
+        self.sounds.play_sound(self.bank.current_question)
+        self.display.file(self.bank.current_question_text_file())
+
+    def on_category_button_pressed(self, channel):
+        print("\nCategory button pressed")
+        self.topics.next_topic()
+        self.bank.reset_topic_questions(self.topics.current_topic_directory())
+        self.sounds.play_sound(self.topics.current_topic_sound_file())
+        self.display.file(self.topics.current_topic_text_file(), capitalize=True)
 
     def on_answer_button_pressed(self, channel):
         """Event handler for answer buttons."""
@@ -67,11 +76,9 @@ class UserInterface:
         print("Selected %s (%s is correct)." % (answer, self.bank.correct_answer))
         if self.bank.correct_answer:
             if self.bank.is_correct(answer):
-                self.sounds.play_message("correct")
-                self.display.text("Correct!")
+                self.announce_correct()
             else:
-                self.sounds.play_message("incorrect")
-                self.display.text("Incorrect...")
+                self.announce_incorrect()
         else:
             self.sounds.play_message("question")
 
