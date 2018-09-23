@@ -1,4 +1,5 @@
-#!/bin/sh -e
+#!/usr/bin/env bash
+set -e
 clear
 ip=$(hostname -I)
 printf "\033[34mIP: \033[30m$ip\n"
