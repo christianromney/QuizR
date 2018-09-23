@@ -2,7 +2,7 @@
 set -e
 clear
 ip=$(hostname -I)
-printf "\033[34mIP: \033[30m$ip\n"
+printf "\033[34mIP: \033[36m$ip\n"
 tput sgr0
 quizr="/home/pi/src/quizr/app.py"
 if [ -f "$quizr" ]; then
